@@ -4,14 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * create_by Android Studio
- *
- * @author zouguo0212@
- * @package_name fun.zzti.memoire.database
- * @description
- * @date 2018/10/26 19:21
- */
+
 public class MyDB extends SQLiteOpenHelper {
     public final static String TABLE_NAME = "record";
 
