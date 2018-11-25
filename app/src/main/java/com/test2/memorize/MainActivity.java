@@ -24,15 +24,6 @@ import java.util.List;
 import com.test2.memorize.Database.MyDB;
 import com.test2.memorize.Entity.Record;
 
-
-/**
- * create_by Android Studio
- *
- * @author zouguo0212@
- * @package_name fun.zzti
- * @description
- * @date 2018/10/26 17:30
- */
 public class MainActivity extends BaseActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener{
 
