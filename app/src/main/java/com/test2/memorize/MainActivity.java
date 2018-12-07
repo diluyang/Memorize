@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.app.AlertDialog;
@@ -29,7 +30,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
     MyDB myDB;
     private ListView myListView;
+    private EditText editText;
     private Button createButton;
+    private Button selectButton;
     private MyBaseAdapter myBaseAdapter;
 
     @Override
@@ -43,8 +46,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     private void init(){
         createButton = findViewById(R.id.createButton);
         createButton.setOnClickListener(this);
-
+        selectButton = findViewById(R.id.selectButton);
+        selectButton.setOnClickListener(this);
         myListView = findViewById(R.id.list_view);
+        editText = findViewById(R.id.select_title);
 
         List<Record> recordList = new ArrayList<>();
         myDB = new MyDB(this);
@@ -80,6 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         myListView.setOnItemLongClickListener(this);
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -88,6 +94,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent);
                 MainActivity.this.finish();
                 break;
+            case R.id.selectButton:
+                String title = editText.getText().toString();
+                SQLiteDatabase db = myDB.getWritableDatabase();
+                Cursor cursor = db.rawQuery("select * from record where title_name like ? or text_body like ?",new String[]{"%"+title+"%","%"+title+"%"});
+                //Cursor cursor=db.query("T_Message",new String[]{"id","date","title","content"},"id=?",new String[]{id_query},null,null,null);
+                List<Record> list =new ArrayList<Record>();
+                Record record;
+                while(cursor.moveToNext()){
+                    record = new Record();
+                    record.setId(
+                            Integer.valueOf(cursor.getString(cursor.getColumnIndex(MyDB.ID))));
+                    record.setTitleName(
+                            cursor.getString(cursor.getColumnIndex(MyDB.TITLE))
+                    );
+                    record.setTextBody(
+                            cursor.getString(cursor.getColumnIndex(MyDB.BODY))
+                    );
+                    record.setCreateTime(
+                            cursor.getString(cursor.getColumnIndex(MyDB.TIME)));
+                    list.add(record);
+                }
+                cursor.close();
+                db.close();
+                // 创建一个Adapter的实例
+                myBaseAdapter = new MyBaseAdapter(this,list,R.layout.list_item);
+                myListView.setAdapter(myBaseAdapter);
+                // 设置点击监听
+                myListView.setOnItemClickListener(this);
+                myListView.setOnItemLongClickListener(this);
             default:
                 break;
         }
